@@ -19,7 +19,7 @@ PLOTS_DIR    = "/home/claude/prism_eval/plots/"
 import os
 os.makedirs(PLOTS_DIR, exist_ok=True)
 
-#  Style 
+# ── Style ─────────────────────────────────────────────────────────────────────
 plt.rcParams.update({
     "font.family":      "serif",
     "font.size":        11,
@@ -41,9 +41,9 @@ LABELS = {
     "C2_raw":            "C2\nRaw Values",
     "C3_plaintext":      "C3\nPlain-text",
     "C4_prism":          "C4\nPRISM",
-    "A1_no_urgency":     "A1\n	2Urgency",
-    "A2_no_thresholds":  "A2\n	2Threshold",
-    "A3_no_correlation": "A3\n	2Correlation",
+    "A1_no_urgency":     "A1\n−Urgency",
+    "A2_no_thresholds":  "A2\n−Threshold",
+    "A3_no_correlation": "A3\n−Correlation",
 }
 
 COLORS = {
@@ -67,9 +67,7 @@ def load_data():
     return df
 
 
-#  Figure 1: Main bar chart 
-# mean total score by condition
-
+# ── Figure 1: Main bar chart — mean total score by condition ──────────────────
 def plot_main_scores(df):
     means = []
     sems  = []
@@ -90,8 +88,8 @@ def plot_main_scores(df):
 
     ax.set_xticks(x)
     ax.set_xticklabels([LABELS[c] for c in CONDITIONS_ORDER])
-    ax.set_ylabel("Mean Total Score (04)")
-    ax.set_title("Figure 1: PRISM vs. Control Conditions  Mean Total Score\n(error bars = SEM, N=100 scenarios per condition)")
+    ax.set_ylabel("Mean Total Score (0–4)")
+    ax.set_title("Figure 1: PRISM vs. Control Conditions — Mean Total Score\n(error bars = SEM, N=100 scenarios per condition)")
     ax.set_ylim(0, 4.2)
     ax.axhline(y=means[3], color="#1565c0", linestyle="--", linewidth=0.8, alpha=0.4)
 
@@ -113,8 +111,7 @@ def plot_main_scores(df):
     print(f"Saved {path}")
 
 
-#  Figure 2: Radar chart  4 dimensions for C1, C3, C4
-
+# ── Figure 2: Radar / spider chart — 4 dimensions for C1, C3, C4 ─────────────
 def plot_radar(df):
     focus = ["C1_baseline", "C3_plaintext", "C4_prism"]
     focus_labels = ["C1: Baseline", "C3: Plain-text", "C4: PRISM"]
@@ -147,8 +144,7 @@ def plot_radar(df):
     print(f"Saved {path}")
 
 
-#  Figure 3: Score by scenario type  C1 vs C3 vs C4
-
+# ── Figure 3: Score by scenario type — C1 vs C3 vs C4 ────────────────────────
 def plot_by_scenario_type(df):
     focus = ["C1_baseline", "C3_plaintext", "C4_prism"]
     focus_labels = ["C1: Baseline", "C3: Plain-text", "C4: PRISM"]
@@ -167,7 +163,7 @@ def plot_by_scenario_type(df):
 
     ax.set_xticks(x + width)
     ax.set_xticklabels([t.replace("_", "\n") for t in types], fontsize=9)
-    ax.set_ylabel("Mean Total Score (04)")
+    ax.set_ylabel("Mean Total Score (0–4)")
     ax.set_title("Figure 3: PRISM Performance by Scenario Type")
     ax.set_ylim(0, 4.3)
     ax.legend()
@@ -180,11 +176,10 @@ def plot_by_scenario_type(df):
     print(f"Saved {path}")
 
 
-#  Figure 4: Ablation waterfall 
-
+# ── Figure 4: Ablation waterfall ─────────────────────────────────────────────
 def plot_ablation_waterfall(df):
     ablations = ["C4_prism", "A1_no_urgency", "A2_no_thresholds", "A3_no_correlation"]
-    abl_labels = ["Full\nPRISM", "	2Urgency\nTag", "	2Threshold\nNorm.", "	2Correlation\nTags"]
+    abl_labels = ["Full\nPRISM", "−Urgency\nTag", "−Threshold\nNorm.", "−Correlation\nTags"]
     colors = ["#1565c0", "#ef9a9a", "#e57373", "#c62828"]
 
     means = [df[df["condition"]==c]["total_score"].mean() for c in ablations]
@@ -197,8 +192,8 @@ def plot_ablation_waterfall(df):
 
     ax.set_xticks(x)
     ax.set_xticklabels(abl_labels)
-    ax.set_ylabel("Mean Total Score (04)")
-    ax.set_title("Figure 4: Ablation Study  Contribution of Each PRISM Component")
+    ax.set_ylabel("Mean Total Score (0–4)")
+    ax.set_title("Figure 4: Ablation Study — Contribution of Each PRISM Component")
     ax.set_ylim(0, 4.2)
 
     for bar, mean in zip(bars, means):
@@ -208,7 +203,7 @@ def plot_ablation_waterfall(df):
     # Draw drop arrows from C4 to each ablation
     for i in range(1, len(ablations)):
         drop = means[0] - means[i]
-        ax.annotate(f"	2{drop:.2f}", xy=(i, means[i]+0.15),
+        ax.annotate(f"−{drop:.2f}", xy=(i, means[i]+0.15),
                     xytext=(i, means[0]-0.15),
                     arrowprops=dict(arrowstyle="->", color="#555", lw=1.2),
                     ha="center", fontsize=8.5, color="#555")
@@ -221,8 +216,7 @@ def plot_ablation_waterfall(df):
     print(f"Saved {path}")
 
 
-#  Figure 5: Dimension breakdown stacked bar 
-
+# ── Figure 5: Dimension breakdown stacked bar ─────────────────────────────────
 def plot_dimension_breakdown(df):
     dim_colors = ["#1565c0", "#42a5f5", "#90caf9", "#bbdefb"]
 
